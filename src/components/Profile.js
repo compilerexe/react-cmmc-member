@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import firebase from './FirebaseDatabase'
+import 'sweetalert'
 
 const RoleList = (props) => {
   return <option value={props.value}>{props.name}</option>
@@ -10,7 +11,16 @@ export default class Profile extends Component {
 
   constructor (props) {
     super(props)
-    this.state = {token: this.props.match.params.id, RoleLists: [], Auth: false, SignOut: false}
+    this.state = {
+      token: this.props.match.params.id,
+      RoleLists: [],
+      Auth: false,
+      SignOut: false,
+      name: null,
+      email: null,
+      role: null,
+      role_detail: null
+    }
   }
 
   componentDidMount () {
@@ -20,7 +30,12 @@ export default class Profile extends Component {
     refAuth.once('value', (snapshot) => {
       snapshot.forEach((childSnapshot) => {
         if (childSnapshot.key === then.state.token) {
-          then.setState({Auth: true})
+          then.setState({
+            Auth: true,
+            name: childSnapshot.val().name,
+            email: childSnapshot.val().email,
+            role: childSnapshot.val().role
+          })
         }
       })
     }).then(() => {
@@ -37,15 +52,44 @@ export default class Profile extends Component {
         lists.push(<RoleList
           key={childSnapshot.key}
           name={childSnapshot.val().name}
-          value={childSnapshot.key}
+          value={childSnapshot.val().name}
         />)
+
+        if (childSnapshot.val().name === then.state.role) {
+          then.setState({
+            role_detail: childSnapshot.val().detail
+          })
+        }
       })
       then.setState({RoleLists: lists})
     })
   }
 
+  componentDidUpdate () {
+    // console.log(`select : ${this.state.role}`)
+  }
+
   _SignOut = () => {
     this.setState({SignOut: true})
+  }
+
+  _Submit = (e) => {
+    e.preventDefault()
+    firebase.database().ref('cmmc/member/' + this.state.token).update({
+      name: this.state.name,
+      email: this.state.email,
+      role: this.state.role
+    })
+    let then = this
+    let ref = firebase.database().ref('cmmc/roles/')
+    ref.once('value', (snapshot) => {
+      snapshot.forEach((childSnapshot) => {
+        if (childSnapshot.val().name === then.state.role) {
+          then.setState({role_detail: childSnapshot.val().detail})
+        }
+      })
+    })
+    swal('Success', '', 'success')
   }
 
   render () {
@@ -83,42 +127,60 @@ export default class Profile extends Component {
                 <div className='card'>
                   <div className='card-content'>
 
-
-                    <div className='field'>
-                      <div className='control'>
-                        <input className='input' type='text' placeholder='Name'/>
-                      </div>
-                    </div>
-
-                    <div className='field'>
-                      <div className='control'>
-                        <input className='input' type='email' placeholder='E-mail'/>
-                      </div>
-                    </div>
-
-                    <div className='field'>
-                      <label className='label'>Role</label>
-                      <div className='control'>
-                        <div className='select'>
-                          <select>
-                            <option value='none'>-- Select Role --</option>
-                            {
-                              this.state.RoleLists.map((role) => {
-                                return role
-                              })
-                            }
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className='field'>
-                      <div className='level-right'>
+                    <form onSubmit={this._Submit}>
+                      <div className='field'>
                         <div className='control'>
-                          <button className='button is-success'>Save</button>
+                          <input
+                            className='input'
+                            type='text'
+                            value={this.state.name}
+                            onChange={(e) => this.setState({name: e.target.value})}
+                            placeholder='Name'/>
                         </div>
                       </div>
-                    </div>
+
+                      <div className='field'>
+                        <div className='control'>
+                          <input
+                            className='input'
+                            type='email'
+                            value={this.state.email}
+                            onChange={(e) => this.setState({email: e.target.value})}
+                            placeholder='E-mail'/>
+                        </div>
+                      </div>
+
+                      <div className='field'>
+                        <label className='label'>Role</label>
+                        <div className='control'>
+                          <div className='select'>
+                            <select
+                              onChange={(e) => this.setState({role: e.target.options[e.target.selectedIndex].text})}
+                              value={this.state.role}
+                            >
+                              <option value='none'>-- Select Role --</option>
+                              {
+                                this.state.RoleLists.map((role) => {
+                                  return role
+                                })
+                              }
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      {
+                        this.state.role_detail
+                      }
+
+                      <div className='field'>
+                        <div className='level-right'>
+                          <div className='control'>
+                            <button className='button is-success'>Save</button>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
 
                   </div>
                 </div>

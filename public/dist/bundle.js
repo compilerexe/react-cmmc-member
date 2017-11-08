@@ -52741,6 +52741,8 @@ var _FirebaseDatabase = __webpack_require__(76);
 
 var _FirebaseDatabase2 = _interopRequireDefault(_FirebaseDatabase);
 
+__webpack_require__(253);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -52769,7 +52771,35 @@ var Profile = function (_Component) {
       _this.setState({ SignOut: true });
     };
 
-    _this.state = { token: _this.props.match.params.id, RoleLists: [], Auth: false, SignOut: false };
+    _this._Submit = function (e) {
+      e.preventDefault();
+      _FirebaseDatabase2.default.database().ref('cmmc/member/' + _this.state.token).update({
+        name: _this.state.name,
+        email: _this.state.email,
+        role: _this.state.role
+      });
+      var then = _this;
+      var ref = _FirebaseDatabase2.default.database().ref('cmmc/roles/');
+      ref.once('value', function (snapshot) {
+        snapshot.forEach(function (childSnapshot) {
+          if (childSnapshot.val().name === then.state.role) {
+            then.setState({ role_detail: childSnapshot.val().detail });
+          }
+        });
+      });
+      swal('Success', '', 'success');
+    };
+
+    _this.state = {
+      token: _this.props.match.params.id,
+      RoleLists: [],
+      Auth: false,
+      SignOut: false,
+      name: null,
+      email: null,
+      role: null,
+      role_detail: null
+    };
     return _this;
   }
 
@@ -52782,7 +52812,12 @@ var Profile = function (_Component) {
       refAuth.once('value', function (snapshot) {
         snapshot.forEach(function (childSnapshot) {
           if (childSnapshot.key === then.state.token) {
-            then.setState({ Auth: true });
+            then.setState({
+              Auth: true,
+              name: childSnapshot.val().name,
+              email: childSnapshot.val().email,
+              role: childSnapshot.val().role
+            });
           }
         });
       }).then(function () {
@@ -52799,15 +52834,27 @@ var Profile = function (_Component) {
           lists.push(_react2.default.createElement(RoleList, {
             key: childSnapshot.key,
             name: childSnapshot.val().name,
-            value: childSnapshot.key
+            value: childSnapshot.val().name
           }));
+
+          if (childSnapshot.val().name === then.state.role) {
+            then.setState({
+              role_detail: childSnapshot.val().detail
+            });
+          }
         });
         then.setState({ RoleLists: lists });
       });
     }
   }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      // console.log(`select : ${this.state.role}`)
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
 
       if (this.state.SignOut) {
         return _react2.default.createElement(_reactRouterDom.Redirect, { to: '/' });
@@ -52874,65 +52921,89 @@ var Profile = function (_Component) {
                     'div',
                     { className: 'card-content' },
                     _react2.default.createElement(
-                      'div',
-                      { className: 'field' },
+                      'form',
+                      { onSubmit: this._Submit },
                       _react2.default.createElement(
                         'div',
-                        { className: 'control' },
-                        _react2.default.createElement('input', { className: 'input', type: 'text', placeholder: 'Name' })
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'field' },
-                      _react2.default.createElement(
-                        'div',
-                        { className: 'control' },
-                        _react2.default.createElement('input', { className: 'input', type: 'email', placeholder: 'E-mail' })
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'field' },
-                      _react2.default.createElement(
-                        'label',
-                        { className: 'label' },
-                        'Role'
+                        { className: 'field' },
+                        _react2.default.createElement(
+                          'div',
+                          { className: 'control' },
+                          _react2.default.createElement('input', {
+                            className: 'input',
+                            type: 'text',
+                            value: this.state.name,
+                            onChange: function onChange(e) {
+                              return _this2.setState({ name: e.target.value });
+                            },
+                            placeholder: 'Name' })
+                        )
                       ),
                       _react2.default.createElement(
                         'div',
-                        { className: 'control' },
+                        { className: 'field' },
                         _react2.default.createElement(
                           'div',
-                          { className: 'select' },
-                          _react2.default.createElement(
-                            'select',
-                            null,
-                            _react2.default.createElement(
-                              'option',
-                              { value: 'none' },
-                              '-- Select Role --'
-                            ),
-                            this.state.RoleLists.map(function (role) {
-                              return role;
-                            })
-                          )
+                          { className: 'control' },
+                          _react2.default.createElement('input', {
+                            className: 'input',
+                            type: 'email',
+                            value: this.state.email,
+                            onChange: function onChange(e) {
+                              return _this2.setState({ email: e.target.value });
+                            },
+                            placeholder: 'E-mail' })
                         )
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'field' },
+                      ),
                       _react2.default.createElement(
                         'div',
-                        { className: 'level-right' },
+                        { className: 'field' },
+                        _react2.default.createElement(
+                          'label',
+                          { className: 'label' },
+                          'Role'
+                        ),
                         _react2.default.createElement(
                           'div',
                           { className: 'control' },
                           _react2.default.createElement(
-                            'button',
-                            { className: 'button is-success' },
-                            'Save'
+                            'div',
+                            { className: 'select' },
+                            _react2.default.createElement(
+                              'select',
+                              {
+                                onChange: function onChange(e) {
+                                  return _this2.setState({ role: e.target.options[e.target.selectedIndex].text });
+                                },
+                                value: this.state.role
+                              },
+                              _react2.default.createElement(
+                                'option',
+                                { value: 'none' },
+                                '-- Select Role --'
+                              ),
+                              this.state.RoleLists.map(function (role) {
+                                return role;
+                              })
+                            )
+                          )
+                        )
+                      ),
+                      this.state.role_detail,
+                      _react2.default.createElement(
+                        'div',
+                        { className: 'field' },
+                        _react2.default.createElement(
+                          'div',
+                          { className: 'level-right' },
+                          _react2.default.createElement(
+                            'div',
+                            { className: 'control' },
+                            _react2.default.createElement(
+                              'button',
+                              { className: 'button is-success' },
+                              'Save'
+                            )
                           )
                         )
                       )
