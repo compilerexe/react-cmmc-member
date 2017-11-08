@@ -1,18 +1,12 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
-import SignUp from './SignUp'
-import Profile from './Profile'
 import firebase from './FirebaseDatabase'
+import { Link, Redirect } from 'react-router-dom'
 
 export default class SignIn extends Component {
 
   constructor (props) {
     super(props)
-    this.state = {email: null, password: null, token: null}
-  }
-
-  _SignUp = () => {
-    ReactDOM.render(<SignUp/>, document.getElementById('app'))
+    this.state = {email: null, password: null, token: null, redirect: false}
   }
 
   _Submit = (e) => {
@@ -29,7 +23,7 @@ export default class SignIn extends Component {
       })
     }).then(function () {
       if (then.state.token !== null) {
-        ReactDOM.render(<Profile token={then.state.token}/>, document.getElementById('app'))
+        then.setState({redirect: true})
       } else {
         alert('Member not found')
       }
@@ -37,6 +31,11 @@ export default class SignIn extends Component {
   }
 
   render () {
+
+    if (this.state.redirect) {
+      return <Redirect to="/profile"/>
+    }
+
     return (
       <div className='container'>
         <div className='section'>
@@ -65,8 +64,10 @@ export default class SignIn extends Component {
                         <div className='left'>
                           <div className='field'>
                             <div className='control'>
-                              <button type='button' className='button is-primary' onClick={this._SignUp}>Sign Up
-                              </button>
+                              <Link to='/signup'>
+                                <button type='button' className='button is-primary'>Sign Up
+                                </button>
+                              </Link>
                             </div>
                           </div>
                         </div>

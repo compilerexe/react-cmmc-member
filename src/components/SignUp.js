@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
-import SignIn from './SignIn'
 import firebase from './FirebaseDatabase'
+import { Link, Redirect } from 'react-router-dom'
 
 export default class SignUp extends Component {
 
@@ -11,12 +10,9 @@ export default class SignUp extends Component {
       name: null,
       email: null,
       password: null,
-      cf_password: null
+      cf_password: null,
+      redirect: false
     }
-  }
-
-  _SignIn = () => {
-    ReactDOM.render(<SignIn/>, document.getElementById('app'))
   }
 
   _Submit = (e) => {
@@ -39,7 +35,9 @@ export default class SignUp extends Component {
             email: then.state.email,
             password: then.state.password
           }).then(function () {
-            ReactDOM.render(<SignIn/>, document.getElementById('app'))
+
+            then.setState({redirect: true})
+
           })
         } else {
           alert('Email not available')
@@ -52,6 +50,11 @@ export default class SignUp extends Component {
   }
 
   render () {
+
+    if (this.state.redirect) {
+      return <Redirect to='/'/>
+    }
+
     return (
       <div className='container'>
         <div className='section'>
@@ -77,7 +80,8 @@ export default class SignUp extends Component {
                     <div className='field'>
                       <div className='control'>
                         <input className='input' type='password'
-                               onChange={(e) => this.setState({password: e.target.value})} placeholder='Password' required/>
+                               onChange={(e) => this.setState({password: e.target.value})} placeholder='Password'
+                               required/>
                       </div>
                     </div>
                     <div className='field'>
@@ -92,7 +96,9 @@ export default class SignUp extends Component {
                         <div className='left'>
                           <div className='field'>
                             <div className='control'>
-                              <button type='button' className='button is-danger' onClick={this._SignIn}>Back</button>
+                              <Link to='/'>
+                                <button type='button' className='button is-danger'>Back</button>
+                              </Link>
                             </div>
                           </div>
                         </div>
