@@ -19,7 +19,7 @@ export default class Manage extends Component {
       let lists = []
 
       snapshot.forEach(function (childSnapshot) {
-        lists.push(<RoleList key={count} number={count} name={childSnapshot.val().name}/>)
+        lists.push(<RoleList key={count} number={count} name={childSnapshot.val().name} edit={'role/edit/' + childSnapshot.key}/>)
         count++
       })
 

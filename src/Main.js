@@ -12,7 +12,8 @@ import SignIn from './components/SignIn'
 import SignUp from './components/SignUp'
 import Profile from './components/Profile'
 import Manage from './components/Manage'
-import CreateRole from './components/CreateRole'
+import RoleCreate from './components/RoleCreate'
+import RoleEdit from './components/RoleEdit'
 
 class Main extends Component {
 
@@ -36,8 +37,9 @@ class Main extends Component {
           <Route path='/signup' component={SignUp} exact/>
           <Route path='/profile' component={Profile} exact/>
           <Route path='/manage' component={Manage} exact/>
-          <Route path='/role/create' component={CreateRole} exact/>
-          <Route component={PageNotFound}/> ba
+          <Route path='/role/create' component={RoleCreate} exact/>
+          <Route path='/role/edit/:id' component={RoleEdit} exact/>
+          <Route component={PageNotFound}/>
         </Switch>
       </HashRouter>
     )

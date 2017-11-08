@@ -6,7 +6,7 @@ const RoleList = (props) => (
     <td style={styles.td}>{props.number}</td>
     <td style={styles.td}>{props.name}</td>
     <td>
-      <Link to='role/update/:id'>
+      <Link to={props.edit}>
         <button className="button is-primary" style={{width: '100%'}}>Edit</button>
       </Link>
     </td>
