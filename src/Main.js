@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import {
   BrowserRouter as Router,
+  HashRouter,
   Route,
   Redirect,
   Switch,
@@ -10,6 +11,8 @@ import 'bulma/css/bulma.css'
 import SignIn from './components/SignIn'
 import SignUp from './components/SignUp'
 import Profile from './components/Profile'
+import Manage from './components/Manage'
+import CreateRole from './components/CreateRole'
 
 class Main extends Component {
 
@@ -18,22 +21,25 @@ class Main extends Component {
     this.state = {token: null}
   }
 
-  _PageNotFound = ({ location }) => (
-    <div className='container'>
-      Page not found for <code>{location.pathname}</code>
-    </div>
-  )
-
   render () {
+
+    const PageNotFound = ({ location }) => (
+      <div className='container'>
+        Page not found for <code>{location.pathname}</code>
+      </div>
+    )
+
     return (
-      <Router>
+      <HashRouter>
         <Switch>
           <Route path='/' component={SignIn} exact/>
           <Route path='/signup' component={SignUp} exact/>
           <Route path='/profile' component={Profile} exact/>
-          <Redirect to='/'/>
+          <Route path='/manage' component={Manage} exact/>
+          <Route path='/role/create' component={CreateRole} exact/>
+          <Route component={PageNotFound}/> ba
         </Switch>
-      </Router>
+      </HashRouter>
     )
   }
 }

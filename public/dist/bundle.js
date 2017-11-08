@@ -6907,6 +6907,23 @@ var SignIn = function (_Component) {
                   'div',
                   { className: 'card-content' },
                   _react2.default.createElement(
+                    'div',
+                    { className: 'level-right' },
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'field' },
+                      _react2.default.createElement(
+                        'div',
+                        { className: 'control' },
+                        _react2.default.createElement(
+                          _reactRouterDom.Link,
+                          { to: '/manage' },
+                          'Manage'
+                        )
+                      )
+                    )
+                  ),
+                  _react2.default.createElement(
                     'form',
                     { onSubmit: this._Submit },
                     _react2.default.createElement(
@@ -16451,6 +16468,14 @@ var _Profile = __webpack_require__(245);
 
 var _Profile2 = _interopRequireDefault(_Profile);
 
+var _Manage = __webpack_require__(249);
+
+var _Manage2 = _interopRequireDefault(_Manage);
+
+var _CreateRole = __webpack_require__(248);
+
+var _CreateRole2 = _interopRequireDefault(_CreateRole);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -16467,20 +16492,6 @@ var Main = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
 
-    _this._PageNotFound = function (_ref) {
-      var location = _ref.location;
-      return _react2.default.createElement(
-        'div',
-        { className: 'container' },
-        'Page not found for ',
-        _react2.default.createElement(
-          'code',
-          null,
-          location.pathname
-        )
-      );
-    };
-
     _this.state = { token: null };
     return _this;
   }
@@ -16488,8 +16499,23 @@ var Main = function (_Component) {
   _createClass(Main, [{
     key: 'render',
     value: function render() {
+
+      var PageNotFound = function PageNotFound(_ref) {
+        var location = _ref.location;
+        return _react2.default.createElement(
+          'div',
+          { className: 'container' },
+          'Page not found for ',
+          _react2.default.createElement(
+            'code',
+            null,
+            location.pathname
+          )
+        );
+      };
+
       return _react2.default.createElement(
-        _reactRouterDom.BrowserRouter,
+        _reactRouterDom.HashRouter,
         null,
         _react2.default.createElement(
           _reactRouterDom.Switch,
@@ -16497,7 +16523,10 @@ var Main = function (_Component) {
           _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _SignIn2.default, exact: true }),
           _react2.default.createElement(_reactRouterDom.Route, { path: '/signup', component: _SignUp2.default, exact: true }),
           _react2.default.createElement(_reactRouterDom.Route, { path: '/profile', component: _Profile2.default, exact: true }),
-          _react2.default.createElement(_reactRouterDom.Redirect, { to: '/' })
+          _react2.default.createElement(_reactRouterDom.Route, { path: '/manage', component: _Manage2.default, exact: true }),
+          _react2.default.createElement(_reactRouterDom.Route, { path: '/role/create', component: _CreateRole2.default, exact: true }),
+          _react2.default.createElement(_reactRouterDom.Route, { component: PageNotFound }),
+          ' ba'
         )
       );
     }
@@ -52884,6 +52913,503 @@ var Profile = function (_Component) {
 }(_react.Component);
 
 exports.default = Profile;
+
+/***/ }),
+/* 246 */,
+/* 247 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Menu = {
+  User: function User() {},
+  Admin: function Admin() {
+    return _react2.default.createElement(
+      'div',
+      { className: 'column is-2 is-offset-1' },
+      _react2.default.createElement(
+        'aside',
+        { className: 'menu section' },
+        _react2.default.createElement(
+          'p',
+          { className: 'menu-label' },
+          ' Menu '
+        ),
+        _react2.default.createElement(
+          'ul',
+          { className: 'menu-list' },
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              'a',
+              { href: '#' },
+              ' Role '
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              'a',
+              { href: '#' },
+              ' Sign Out '
+            )
+          )
+        )
+      )
+    );
+  }
+};
+
+exports.default = Menu;
+
+/***/ }),
+/* 248 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouterDom = __webpack_require__(130);
+
+var _FirebaseDatabase = __webpack_require__(76);
+
+var _FirebaseDatabase2 = _interopRequireDefault(_FirebaseDatabase);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CreateRole = function (_Component) {
+  _inherits(CreateRole, _Component);
+
+  function CreateRole(props) {
+    _classCallCheck(this, CreateRole);
+
+    var _this = _possibleConstructorReturn(this, (CreateRole.__proto__ || Object.getPrototypeOf(CreateRole)).call(this, props));
+
+    _this._insertRole = function () {
+      var ref = _FirebaseDatabase2.default.database().ref('cmmc/roles');
+      var then = _this;
+      var _this$state = _this.state,
+          role_name = _this$state.role_name,
+          role_detail = _this$state.role_detail;
+
+      ref.push({
+        name: role_name,
+        detail: role_detail
+      }).then(function () {
+        then.setState({ redirect: true });
+      });
+    };
+
+    _this.state = { role_name: null, role_detail: null, redirect: false };
+    return _this;
+  }
+
+  _createClass(CreateRole, [{
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      if (this.state.redirect) {
+        return _react2.default.createElement(_reactRouterDom.Redirect, { to: '/manage' });
+      }
+
+      return _react2.default.createElement(
+        'div',
+        { className: 'container' },
+        _react2.default.createElement(
+          'div',
+          { className: 'columns' },
+          _react2.default.createElement(
+            'div',
+            { className: 'column is-2 is-offset-1' },
+            _react2.default.createElement(
+              'aside',
+              { className: 'menu section' },
+              _react2.default.createElement(
+                'p',
+                { className: 'menu-label' },
+                ' Menu '
+              ),
+              _react2.default.createElement(
+                'ul',
+                { className: 'menu-list' },
+                _react2.default.createElement(
+                  'li',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { href: '#' },
+                    ' Role '
+                  )
+                ),
+                _react2.default.createElement(
+                  'li',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { href: '#' },
+                    ' Sign Out '
+                  )
+                )
+              )
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'column is-8' },
+            _react2.default.createElement(
+              'div',
+              { className: 'section' },
+              _react2.default.createElement(
+                'h1',
+                { className: 'title' },
+                'New Role'
+              ),
+              _react2.default.createElement('hr', null),
+              _react2.default.createElement(
+                'div',
+                { className: 'card' },
+                _react2.default.createElement(
+                  'div',
+                  { className: 'card-content' },
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'field level-right' },
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'control' },
+                      _react2.default.createElement(
+                        _reactRouterDom.Link,
+                        { to: '/manage' },
+                        _react2.default.createElement(
+                          'button',
+                          { className: 'button is-danger' },
+                          'Back'
+                        )
+                      )
+                    )
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'field' },
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'control' },
+                      _react2.default.createElement('input', { type: 'text', id: 'role_name', className: 'input is-info', placeholder: 'Role Name',
+                        onChange: function onChange(e) {
+                          return _this2.setState({ role_name: e.target.value });
+                        } })
+                    )
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'field' },
+                    _react2.default.createElement('textarea', { className: 'textarea', id: 'role_detail', cols: '30', rows: '10',
+                      placeholder: 'Write something about your role ...',
+                      onChange: function onChange(e) {
+                        return _this2.setState({ role_detail: e.target.value });
+                      } })
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'field' },
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'level-right' },
+                      _react2.default.createElement(
+                        'div',
+                        { className: 'control' },
+                        _react2.default.createElement(
+                          'button',
+                          { type: 'button', id: 'btn-submit', className: 'button is-success', style: { width: '100px' },
+                            onClick: this._insertRole },
+                          'Add'
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return CreateRole;
+}(_react.Component);
+
+exports.default = CreateRole;
+
+/***/ }),
+/* 249 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouterDom = __webpack_require__(130);
+
+var _FirebaseDatabase = __webpack_require__(76);
+
+var _FirebaseDatabase2 = _interopRequireDefault(_FirebaseDatabase);
+
+var _Menu = __webpack_require__(247);
+
+var _Menu2 = _interopRequireDefault(_Menu);
+
+var _RoleList = __webpack_require__(250);
+
+var _RoleList2 = _interopRequireDefault(_RoleList);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Manage = function (_Component) {
+  _inherits(Manage, _Component);
+
+  function Manage(props) {
+    _classCallCheck(this, Manage);
+
+    var _this = _possibleConstructorReturn(this, (Manage.__proto__ || Object.getPrototypeOf(Manage)).call(this, props));
+
+    _this.state = { RoleLists: [] };
+    return _this;
+  }
+
+  _createClass(Manage, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      var ref = _FirebaseDatabase2.default.database().ref('cmmc/roles');
+
+      ref.on('value', function (snapshot) {
+        var count = 1;
+        var lists = [];
+
+        snapshot.forEach(function (childSnapshot) {
+          lists.push(_react2.default.createElement(_RoleList2.default, { key: count, number: count, name: childSnapshot.val().name }));
+          count++;
+        });
+
+        //console.log(lists)
+        _this2.setState({ RoleLists: lists });
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+
+      var styles = {
+        th: {
+          textAlign: 'center',
+          verticalAlign: 'middle'
+        }
+      };
+
+      return _react2.default.createElement(
+        'div',
+        { className: 'container' },
+        _react2.default.createElement(
+          'div',
+          { className: 'columns' },
+          _react2.default.createElement(_Menu2.default.Admin, null),
+          _react2.default.createElement(
+            'div',
+            { className: 'column is-8' },
+            _react2.default.createElement(
+              'div',
+              { className: 'section' },
+              _react2.default.createElement(
+                'h1',
+                { className: 'title' },
+                'Role'
+              ),
+              _react2.default.createElement('hr', null),
+              _react2.default.createElement(
+                'div',
+                { className: 'card' },
+                _react2.default.createElement(
+                  'div',
+                  { className: 'card-content' },
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'field level-right' },
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'control' },
+                      _react2.default.createElement(
+                        _reactRouterDom.Link,
+                        { to: '/role/create' },
+                        _react2.default.createElement(
+                          'button',
+                          { className: 'button is-success' },
+                          'Add Role'
+                        )
+                      )
+                    )
+                  ),
+                  _react2.default.createElement(
+                    'table',
+                    { className: 'table is-bordered', style: { width: '100%' } },
+                    _react2.default.createElement(
+                      'thead',
+                      null,
+                      _react2.default.createElement(
+                        'tr',
+                        null,
+                        _react2.default.createElement(
+                          'th',
+                          { style: styles.th },
+                          '#'
+                        ),
+                        _react2.default.createElement(
+                          'th',
+                          { style: styles.th },
+                          'Role Name'
+                        ),
+                        _react2.default.createElement('th', null),
+                        _react2.default.createElement('th', null)
+                      )
+                    ),
+                    _react2.default.createElement(
+                      'tbody',
+                      { id: 'roles' },
+                      this.state.RoleLists.map(function (list) {
+                        return list;
+                      })
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return Manage;
+}(_react.Component);
+
+exports.default = Manage;
+
+/***/ }),
+/* 250 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouterDom = __webpack_require__(130);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var RoleList = function RoleList(props) {
+  return _react2.default.createElement(
+    'tr',
+    null,
+    _react2.default.createElement(
+      'td',
+      { style: styles.td },
+      props.number
+    ),
+    _react2.default.createElement(
+      'td',
+      { style: styles.td },
+      props.name
+    ),
+    _react2.default.createElement(
+      'td',
+      null,
+      _react2.default.createElement(
+        _reactRouterDom.Link,
+        { to: 'role/update/:id' },
+        _react2.default.createElement(
+          'button',
+          { className: 'button is-primary', style: { width: '100%' } },
+          'Edit'
+        )
+      )
+    ),
+    _react2.default.createElement(
+      'td',
+      null,
+      _react2.default.createElement(
+        _reactRouterDom.Link,
+        { to: 'role/delete/:id' },
+        _react2.default.createElement(
+          'button',
+          { className: 'button is-danger', style: { width: '100%' } },
+          'Delete'
+        )
+      )
+    )
+  );
+};
+
+var styles = {
+  td: {
+    textAlign: 'center',
+    verticalAlign: 'middle'
+  }
+};
+
+exports.default = RoleList;
 
 /***/ })
 /******/ ]);
