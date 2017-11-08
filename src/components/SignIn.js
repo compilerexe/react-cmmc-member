@@ -33,7 +33,7 @@ export default class SignIn extends Component {
   render () {
 
     if (this.state.redirect) {
-      return <Redirect to="/profile"/>
+      return <Redirect to={'/profile/' + this.state.token}/>
     }
 
     return (

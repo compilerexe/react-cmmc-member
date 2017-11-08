@@ -6880,7 +6880,7 @@ var SignIn = function (_Component) {
       var _this2 = this;
 
       if (this.state.redirect) {
-        return _react2.default.createElement(_reactRouterDom.Redirect, { to: '/profile' });
+        return _react2.default.createElement(_reactRouterDom.Redirect, { to: '/profile/' + this.state.token });
       }
 
       return _react2.default.createElement(
@@ -16526,7 +16526,7 @@ var Main = function (_Component) {
           null,
           _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _SignIn2.default, exact: true }),
           _react2.default.createElement(_reactRouterDom.Route, { path: '/signup', component: _SignUp2.default, exact: true }),
-          _react2.default.createElement(_reactRouterDom.Route, { path: '/profile', component: _Profile2.default, exact: true }),
+          _react2.default.createElement(_reactRouterDom.Route, { path: '/profile/:id', component: _Profile2.default, exact: true }),
           _react2.default.createElement(_reactRouterDom.Route, { path: '/manage', component: _Manage2.default, exact: true }),
           _react2.default.createElement(_reactRouterDom.Route, { path: '/role/create', component: _RoleCreate2.default, exact: true }),
           _react2.default.createElement(_reactRouterDom.Route, { path: '/role/edit/:id', component: _RoleEdit2.default, exact: true }),
@@ -52737,6 +52737,10 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(130);
 
+var _FirebaseDatabase = __webpack_require__(76);
+
+var _FirebaseDatabase2 = _interopRequireDefault(_FirebaseDatabase);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -52744,6 +52748,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var RoleList = function RoleList(props) {
+  return _react2.default.createElement(
+    'option',
+    { value: props.value },
+    props.name
+  );
+};
 
 var Profile = function (_Component) {
   _inherits(Profile, _Component);
@@ -52757,11 +52769,43 @@ var Profile = function (_Component) {
       _this.setState({ SignOut: true });
     };
 
-    _this.state = { token: props.token, SignOut: false };
+    _this.state = { token: _this.props.match.params.id, RoleLists: [], Auth: false, SignOut: false };
     return _this;
   }
 
   _createClass(Profile, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var then = this;
+      var refAuth = _FirebaseDatabase2.default.database().ref('cmmc/member');
+
+      refAuth.once('value', function (snapshot) {
+        snapshot.forEach(function (childSnapshot) {
+          if (childSnapshot.key === then.state.token) {
+            then.setState({ Auth: true });
+          }
+        });
+      }).then(function () {
+        if (!then.state.Auth) {
+          then.setState({ SignOut: true });
+        }
+      });
+
+      var ref = _FirebaseDatabase2.default.database().ref('cmmc/roles');
+      var lists = [];
+
+      ref.once('value', function (snapshot) {
+        snapshot.forEach(function (childSnapshot) {
+          lists.push(_react2.default.createElement(RoleList, {
+            key: childSnapshot.key,
+            name: childSnapshot.val().name,
+            value: childSnapshot.key
+          }));
+        });
+        then.setState({ RoleLists: lists });
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
 
@@ -52769,137 +52813,127 @@ var Profile = function (_Component) {
         return _react2.default.createElement(_reactRouterDom.Redirect, { to: '/' });
       }
 
-      return _react2.default.createElement(
-        'div',
-        { className: 'container' },
-        _react2.default.createElement(
+      if (this.state.Auth) {
+        return _react2.default.createElement(
           'div',
-          { className: 'columns' },
+          { className: 'container' },
           _react2.default.createElement(
             'div',
-            { className: 'column is-2 is-offset-1' },
+            { className: 'columns' },
             _react2.default.createElement(
-              'aside',
-              { className: 'menu section' },
+              'div',
+              { className: 'column is-2 is-offset-1' },
               _react2.default.createElement(
-                'p',
-                { className: 'menu-label' },
-                ' Menu '
-              ),
-              _react2.default.createElement(
-                'ul',
-                { className: 'menu-list' },
+                'aside',
+                { className: 'menu section' },
                 _react2.default.createElement(
-                  'li',
-                  null,
-                  _react2.default.createElement(
-                    'a',
-                    { href: '#' },
-                    ' Profile '
-                  )
+                  'p',
+                  { className: 'menu-label' },
+                  ' Menu '
                 ),
                 _react2.default.createElement(
-                  'li',
-                  null,
+                  'ul',
+                  { className: 'menu-list' },
                   _react2.default.createElement(
-                    'button',
-                    { type: 'button', className: 'button is-danger', onClick: this._SignOut },
-                    ' Sign Out'
+                    'li',
+                    null,
+                    _react2.default.createElement(
+                      'a',
+                      { href: '#' },
+                      ' Profile '
+                    )
+                  ),
+                  _react2.default.createElement(
+                    'li',
+                    null,
+                    _react2.default.createElement(
+                      'button',
+                      { type: 'button', className: 'button is-danger', onClick: this._SignOut },
+                      ' Sign Out'
+                    )
                   )
                 )
               )
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'column is-8' },
+            ),
             _react2.default.createElement(
               'div',
-              { className: 'section' },
-              _react2.default.createElement(
-                'h1',
-                { className: 'title' },
-                'Profile'
-              ),
-              _react2.default.createElement('hr', null),
+              { className: 'column is-8' },
               _react2.default.createElement(
                 'div',
-                { className: 'card' },
+                { className: 'section' },
+                _react2.default.createElement(
+                  'h1',
+                  { className: 'title' },
+                  'Profile'
+                ),
+                _react2.default.createElement('hr', null),
                 _react2.default.createElement(
                   'div',
-                  { className: 'card-content' },
+                  { className: 'card' },
                   _react2.default.createElement(
                     'div',
-                    { className: 'field' },
+                    { className: 'card-content' },
                     _react2.default.createElement(
                       'div',
-                      { className: 'control' },
-                      _react2.default.createElement('input', { className: 'input', type: 'text', placeholder: 'Name' })
-                    )
-                  ),
-                  _react2.default.createElement(
-                    'div',
-                    { className: 'field' },
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'control' },
-                      _react2.default.createElement('input', { className: 'input', type: 'email', placeholder: 'E-mail' })
-                    )
-                  ),
-                  _react2.default.createElement(
-                    'div',
-                    { className: 'field' },
-                    _react2.default.createElement(
-                      'label',
-                      { className: 'label' },
-                      'Role'
+                      { className: 'field' },
+                      _react2.default.createElement(
+                        'div',
+                        { className: 'control' },
+                        _react2.default.createElement('input', { className: 'input', type: 'text', placeholder: 'Name' })
+                      )
                     ),
                     _react2.default.createElement(
                       'div',
-                      { className: 'control' },
+                      { className: 'field' },
                       _react2.default.createElement(
                         'div',
-                        { className: 'select' },
-                        _react2.default.createElement(
-                          'select',
-                          null,
-                          _react2.default.createElement(
-                            'option',
-                            { value: 'none' },
-                            '-- Select Role --'
-                          ),
-                          _react2.default.createElement(
-                            'option',
-                            { value: 'Electronics' },
-                            'Electronics'
-                          ),
-                          _react2.default.createElement(
-                            'option',
-                            { value: 'Software Developer' },
-                            'Software Developer'
-                          ),
-                          _react2.default.createElement(
-                            'option',
-                            { value: 'Designer' },
-                            'Designer'
-                          )
-                        )
+                        { className: 'control' },
+                        _react2.default.createElement('input', { className: 'input', type: 'email', placeholder: 'E-mail' })
                       )
-                    )
-                  ),
-                  _react2.default.createElement(
-                    'div',
-                    { className: 'field' },
+                    ),
                     _react2.default.createElement(
                       'div',
-                      { className: 'level-right' },
+                      { className: 'field' },
+                      _react2.default.createElement(
+                        'label',
+                        { className: 'label' },
+                        'Role'
+                      ),
                       _react2.default.createElement(
                         'div',
                         { className: 'control' },
                         _react2.default.createElement(
-                          'button',
-                          { className: 'button is-success' },
-                          'save'
+                          'div',
+                          { className: 'select' },
+                          _react2.default.createElement(
+                            'select',
+                            null,
+                            _react2.default.createElement(
+                              'option',
+                              { value: 'none' },
+                              '-- Select Role --'
+                            ),
+                            this.state.RoleLists.map(function (role) {
+                              return role;
+                            })
+                          )
+                        )
+                      )
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'field' },
+                      _react2.default.createElement(
+                        'div',
+                        { className: 'level-right' },
+                        _react2.default.createElement(
+                          'div',
+                          { className: 'control' },
+                          _react2.default.createElement(
+                            'button',
+                            { className: 'button is-success' },
+                            'Save'
+                          )
                         )
                       )
                     )
@@ -52908,8 +52942,10 @@ var Profile = function (_Component) {
               )
             )
           )
-        )
-      );
+        );
+      }
+
+      return _react2.default.createElement('div', null);
     }
   }]);
 
@@ -52934,6 +52970,8 @@ var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRouterDom = __webpack_require__(130);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Menu = {
@@ -52957,18 +52995,18 @@ var Menu = {
             'li',
             null,
             _react2.default.createElement(
-              'a',
-              { href: '#' },
-              ' Role '
+              _reactRouterDom.Link,
+              { to: '/manage' },
+              'Role'
             )
           ),
           _react2.default.createElement(
             'li',
             null,
             _react2.default.createElement(
-              'a',
-              { href: '#' },
-              ' Sign Out '
+              _reactRouterDom.Link,
+              { to: '/' },
+              'Sign Out'
             )
           )
         )

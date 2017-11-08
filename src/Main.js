@@ -35,7 +35,7 @@ class Main extends Component {
         <Switch>
           <Route path='/' component={SignIn} exact/>
           <Route path='/signup' component={SignUp} exact/>
-          <Route path='/profile' component={Profile} exact/>
+          <Route path='/profile/:id' component={Profile} exact/>
           <Route path='/manage' component={Manage} exact/>
           <Route path='/role/create' component={RoleCreate} exact/>
           <Route path='/role/edit/:id' component={RoleEdit} exact/>

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Menu = {
   User: () => {
@@ -11,10 +12,14 @@ const Menu = {
           <p className='menu-label'> Menu </p>
           <ul className='menu-list'>
             <li>
-              <a href='#'> Role </a>
+               <Link to='/manage'>
+                 Role
+               </Link>
             </li>
             <li>
-              <a href='#'> Sign Out </a>
+              <Link to='/'>
+                Sign Out
+              </Link>
             </li>
           </ul>
         </aside>
