@@ -11,9 +11,7 @@ const RoleList = (props) => (
       </Link>
     </td>
     <td>
-      <Link to='role/delete/:id'>
-        <button className="button is-danger" style={{width: '100%'}}>Delete</button>
-      </Link>
+      <button className="button is-danger" style={{width: '100%'}} onClick={props.delete}>Delete</button>
     </td>
   </tr>
 )

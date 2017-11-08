@@ -53043,7 +53043,14 @@ var Manage = function (_Component) {
         var lists = [];
 
         snapshot.forEach(function (childSnapshot) {
-          lists.push(_react2.default.createElement(_RoleList2.default, { key: count, number: count, name: childSnapshot.val().name, edit: 'role/edit/' + childSnapshot.key }));
+          lists.push(_react2.default.createElement(_RoleList2.default, {
+            key: count, number: count,
+            name: childSnapshot.val().name,
+            edit: 'role/edit/' + childSnapshot.key,
+            'delete': function _delete() {
+              _FirebaseDatabase2.default.database().ref('cmmc/roles/' + childSnapshot.key).remove();
+            }
+          }));
           count++;
         });
 
@@ -53199,13 +53206,9 @@ var RoleList = function RoleList(props) {
       'td',
       null,
       _react2.default.createElement(
-        _reactRouterDom.Link,
-        { to: 'role/delete/:id' },
-        _react2.default.createElement(
-          'button',
-          { className: 'button is-danger', style: { width: '100%' } },
-          'Delete'
-        )
+        'button',
+        { className: 'button is-danger', style: { width: '100%' }, onClick: props.delete },
+        'Delete'
       )
     )
   );
