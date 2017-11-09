@@ -45,14 +45,6 @@ export default class SignIn extends Component {
               <div className='card'>
                 <div className='card-content'>
 
-                  <div className='level-right'>
-                    <div className='field'>
-                      <div className='control'>
-                        <Link to='/manage'>Manage</Link>
-                      </div>
-                    </div>
-                  </div>
-
                   <form onSubmit={this._Submit}>
                     <div className='field'>
                       <div className='control'>

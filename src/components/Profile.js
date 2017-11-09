@@ -52,10 +52,10 @@ export default class Profile extends Component {
         lists.push(<RoleList
           key={childSnapshot.key}
           name={childSnapshot.val().name}
-          value={childSnapshot.val().name}
+          value={childSnapshot.key}
         />)
 
-        if (childSnapshot.val().name === then.state.role) {
+        if (childSnapshot.key === then.state.role) {
           then.setState({
             role_detail: childSnapshot.val().detail
           })
@@ -84,7 +84,7 @@ export default class Profile extends Component {
     let ref = firebase.database().ref('cmmc/roles/')
     ref.once('value', (snapshot) => {
       snapshot.forEach((childSnapshot) => {
-        if (childSnapshot.val().name === then.state.role) {
+        if (childSnapshot.key === then.state.role) {
           then.setState({role_detail: childSnapshot.val().detail})
         }
       })
@@ -155,7 +155,7 @@ export default class Profile extends Component {
                         <div className='control'>
                           <div className='select'>
                             <select
-                              onChange={(e) => this.setState({role: e.target.options[e.target.selectedIndex].text})}
+                              onChange={(e) => this.setState({role: e.target.options[e.target.selectedIndex].value})}
                               value={this.state.role}
                             >
                               <option value='none'>-- Select Role --</option>

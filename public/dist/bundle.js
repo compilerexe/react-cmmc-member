@@ -6907,23 +6907,6 @@ var SignIn = function (_Component) {
                   'div',
                   { className: 'card-content' },
                   _react2.default.createElement(
-                    'div',
-                    { className: 'level-right' },
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'field' },
-                      _react2.default.createElement(
-                        'div',
-                        { className: 'control' },
-                        _react2.default.createElement(
-                          _reactRouterDom.Link,
-                          { to: '/manage' },
-                          'Manage'
-                        )
-                      )
-                    )
-                  ),
-                  _react2.default.createElement(
                     'form',
                     { onSubmit: this._Submit },
                     _react2.default.createElement(
@@ -52782,7 +52765,7 @@ var Profile = function (_Component) {
       var ref = _FirebaseDatabase2.default.database().ref('cmmc/roles/');
       ref.once('value', function (snapshot) {
         snapshot.forEach(function (childSnapshot) {
-          if (childSnapshot.val().name === then.state.role) {
+          if (childSnapshot.key === then.state.role) {
             then.setState({ role_detail: childSnapshot.val().detail });
           }
         });
@@ -52834,10 +52817,10 @@ var Profile = function (_Component) {
           lists.push(_react2.default.createElement(RoleList, {
             key: childSnapshot.key,
             name: childSnapshot.val().name,
-            value: childSnapshot.val().name
+            value: childSnapshot.key
           }));
 
-          if (childSnapshot.val().name === then.state.role) {
+          if (childSnapshot.key === then.state.role) {
             then.setState({
               role_detail: childSnapshot.val().detail
             });
@@ -52973,7 +52956,7 @@ var Profile = function (_Component) {
                               'select',
                               {
                                 onChange: function onChange(e) {
-                                  return _this2.setState({ role: e.target.options[e.target.selectedIndex].text });
+                                  return _this2.setState({ role: e.target.options[e.target.selectedIndex].value });
                                 },
                                 value: this.state.role
                               },
