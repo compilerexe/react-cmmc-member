@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
-import firebase from './FirebaseDatabase'
 import { Link, Redirect } from 'react-router-dom'
+import { sign_up } from '../actions/users'
+import configureStore from '../store/configureStore'
+
+const store = configureStore()
 
 export default class SignUp extends Component {
 
@@ -10,43 +13,21 @@ export default class SignUp extends Component {
       name: null,
       email: null,
       password: null,
-      cf_password: null,
+      confirm_password: null,
       redirect: false
     }
   }
 
   _Submit = (e) => {
     e.preventDefault()
-    if (this.state.password === this.state.cf_password) {
-      let then = this
-      let ref = firebase.database().ref('cmmc')
-      /* === check duplicate email === */
-      let duplicate_email = 0
-      ref.child('member').once('value', function (snapshot) {
-        snapshot.forEach(function (childSnapshot) {
-          if (childSnapshot.val().email === then.state.email) {
-            duplicate_email = 1
-          }
-        })
-      }).then(function () {
-        if (duplicate_email === 0) {
-          ref.child('member').push({
-            name: then.state.name,
-            email: then.state.email,
-            password: then.state.password
-          }).then(function () {
-
-            then.setState({redirect: true})
-
-          })
-        } else {
-          alert('Email not available')
-        }
-      })
-      /* ============================= */
-    } else {
-      alert('Password do not match')
-    }
+    store.dispatch(sign_up({
+      name: this.state.name,
+      email: this.state.email,
+      password: this.state.password,
+      confirm_password: this.state.confirm_password,
+      role: 'none',
+      then: this
+    }))
   }
 
   render () {
@@ -87,7 +68,7 @@ export default class SignUp extends Component {
                     <div className='field'>
                       <div className='control'>
                         <input className='input' type='password'
-                               onChange={(e) => this.setState({cf_password: e.target.value})}
+                               onChange={(e) => this.setState({confirm_password: e.target.value})}
                                placeholder='Confirm Password' required/>
                       </div>
                     </div>
