@@ -1,20 +1,36 @@
 export const sign_up = (
   {
-    name = '',
-    email = '',
-    password = '',
-    confirm_password = 'none',
-    role = 'none',
-    then = ''
+    signup_name = '',
+    signup_email = '',
+    signup_password = '',
+    signup_confirm_password = 'none',
+    signup_role = 'none',
+    signup_then = ''
   } = {}) => ({
   type: 'sign_up',
   info:
     {
-      name,
-      email,
-      password,
-      confirm_password,
-      role,
-      then
+      signup_name,
+      signup_email,
+      signup_password,
+      signup_confirm_password,
+      signup_role,
+      signup_then
     }
 })
+
+export const sign_in = (
+  {
+    signin_email = '',
+    signin_password = '',
+    signin_then = ''
+  } = {}) => ({
+    type: 'sign_in',
+    info:
+      {
+        signin_email,
+        signin_password,
+        signin_then
+      }
+  }
+)

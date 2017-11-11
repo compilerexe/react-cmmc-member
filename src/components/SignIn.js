@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
-import firebase from './FirebaseDatabase'
 import { Link, Redirect } from 'react-router-dom'
+import { sign_in } from '../actions/users'
+import configureStore from '../store/configureStore'
+
+const store = configureStore()
 
 export default class SignIn extends Component {
 
@@ -11,23 +14,11 @@ export default class SignIn extends Component {
 
   _Submit = (e) => {
     e.preventDefault()
-    let then = this
-    let ref = firebase.database().ref('cmmc/member')
-    ref.once('value', (snapshot) => {
-      snapshot.forEach((childSnapshot) => {
-        if (childSnapshot.val().email === then.state.email &&
-          childSnapshot.val().password === then.state.password) {
-          then.setState({token: childSnapshot.key})
-          //console.log(then.state.token)
-        }
-      })
-    }).then(function () {
-      if (then.state.token !== null) {
-        then.setState({redirect: true})
-      } else {
-        alert('Member not found')
-      }
-    })
+    store.dispatch(sign_in({
+      signin_email: this.state.email,
+      signin_password: this.state.password,
+      signin_then: this
+    }))
   }
 
   render () {

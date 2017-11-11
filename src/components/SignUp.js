@@ -21,12 +21,12 @@ export default class SignUp extends Component {
   _Submit = (e) => {
     e.preventDefault()
     store.dispatch(sign_up({
-      name: this.state.name,
-      email: this.state.email,
-      password: this.state.password,
-      confirm_password: this.state.confirm_password,
-      role: 'none',
-      then: this
+      signup_name: this.state.name,
+      signup_email: this.state.email,
+      signup_password: this.state.password,
+      signup_confirm_password: this.state.confirm_password,
+      signup_role: 'none',
+      signup_then: this
     }))
   }
 

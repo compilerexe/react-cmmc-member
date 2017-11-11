@@ -40695,11 +40695,13 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _FirebaseDatabase = __webpack_require__(20);
-
-var _FirebaseDatabase2 = _interopRequireDefault(_FirebaseDatabase);
-
 var _reactRouterDom = __webpack_require__(12);
+
+var _users = __webpack_require__(252);
+
+var _configureStore = __webpack_require__(253);
+
+var _configureStore2 = _interopRequireDefault(_configureStore);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -40708,6 +40710,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var store = (0, _configureStore2.default)();
 
 var SignIn = function (_Component) {
   _inherits(SignIn, _Component);
@@ -40719,22 +40723,11 @@ var SignIn = function (_Component) {
 
     _this._Submit = function (e) {
       e.preventDefault();
-      var then = _this;
-      var ref = _FirebaseDatabase2.default.database().ref('cmmc/member');
-      ref.once('value', function (snapshot) {
-        snapshot.forEach(function (childSnapshot) {
-          if (childSnapshot.val().email === then.state.email && childSnapshot.val().password === then.state.password) {
-            then.setState({ token: childSnapshot.key });
-            //console.log(then.state.token)
-          }
-        });
-      }).then(function () {
-        if (then.state.token !== null) {
-          then.setState({ redirect: true });
-        } else {
-          alert('Member not found');
-        }
-      });
+      store.dispatch((0, _users.sign_in)({
+        signin_email: _this.state.email,
+        signin_password: _this.state.password,
+        signin_then: _this
+      }));
     };
 
     _this.state = { email: null, password: null, token: null, redirect: false };
@@ -52996,12 +52989,12 @@ var SignUp = function (_Component) {
     _this._Submit = function (e) {
       e.preventDefault();
       store.dispatch((0, _users.sign_up)({
-        name: _this.state.name,
-        email: _this.state.email,
-        password: _this.state.password,
-        confirm_password: _this.state.confirm_password,
-        role: 'none',
-        then: _this
+        signup_name: _this.state.name,
+        signup_email: _this.state.email,
+        signup_password: _this.state.password,
+        signup_confirm_password: _this.state.confirm_password,
+        signup_role: 'none',
+        signup_then: _this
       }));
     };
 
@@ -53177,28 +53170,47 @@ Object.defineProperty(exports, "__esModule", {
 });
 var sign_up = exports.sign_up = function sign_up() {
   var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-      _ref$name = _ref.name,
-      name = _ref$name === undefined ? '' : _ref$name,
-      _ref$email = _ref.email,
-      email = _ref$email === undefined ? '' : _ref$email,
-      _ref$password = _ref.password,
-      password = _ref$password === undefined ? '' : _ref$password,
-      _ref$confirm_password = _ref.confirm_password,
-      confirm_password = _ref$confirm_password === undefined ? 'none' : _ref$confirm_password,
-      _ref$role = _ref.role,
-      role = _ref$role === undefined ? 'none' : _ref$role,
-      _ref$then = _ref.then,
-      then = _ref$then === undefined ? '' : _ref$then;
+      _ref$signup_name = _ref.signup_name,
+      signup_name = _ref$signup_name === undefined ? '' : _ref$signup_name,
+      _ref$signup_email = _ref.signup_email,
+      signup_email = _ref$signup_email === undefined ? '' : _ref$signup_email,
+      _ref$signup_password = _ref.signup_password,
+      signup_password = _ref$signup_password === undefined ? '' : _ref$signup_password,
+      _ref$signup_confirm_p = _ref.signup_confirm_password,
+      signup_confirm_password = _ref$signup_confirm_p === undefined ? 'none' : _ref$signup_confirm_p,
+      _ref$signup_role = _ref.signup_role,
+      signup_role = _ref$signup_role === undefined ? 'none' : _ref$signup_role,
+      _ref$signup_then = _ref.signup_then,
+      signup_then = _ref$signup_then === undefined ? '' : _ref$signup_then;
 
   return {
     type: 'sign_up',
     info: {
-      name: name,
-      email: email,
-      password: password,
-      confirm_password: confirm_password,
-      role: role,
-      then: then
+      signup_name: signup_name,
+      signup_email: signup_email,
+      signup_password: signup_password,
+      signup_confirm_password: signup_confirm_password,
+      signup_role: signup_role,
+      signup_then: signup_then
+    }
+  };
+};
+
+var sign_in = exports.sign_in = function sign_in() {
+  var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+      _ref2$signin_email = _ref2.signin_email,
+      signin_email = _ref2$signin_email === undefined ? '' : _ref2$signin_email,
+      _ref2$signin_password = _ref2.signin_password,
+      signin_password = _ref2$signin_password === undefined ? '' : _ref2$signin_password,
+      _ref2$signin_then = _ref2.signin_then,
+      signin_then = _ref2$signin_then === undefined ? '' : _ref2$signin_then;
+
+  return {
+    type: 'sign_in',
+    info: {
+      signin_email: signin_email,
+      signin_password: signin_password,
+      signin_then: signin_then
     }
   };
 };
@@ -53861,28 +53873,30 @@ exports.default = function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var action = arguments[1];
 
+
   switch (action.type) {
+
     case 'sign_up':
       var _action$info = action.info,
-          name = _action$info.name,
-          email = _action$info.email,
-          password = _action$info.password,
-          confirm_password = _action$info.confirm_password,
-          role = _action$info.role,
-          then = _action$info.then;
+          signup_name = _action$info.signup_name,
+          signup_email = _action$info.signup_email,
+          signup_password = _action$info.signup_password,
+          signup_confirm_password = _action$info.signup_confirm_password,
+          signup_role = _action$info.signup_role,
+          signup_then = _action$info.signup_then;
 
-      var ref = _FirebaseDatabase2.default.database().ref('cmmc');
+      var signup_ref = _FirebaseDatabase2.default.database().ref('cmmc');
 
-      if (password !== confirm_password) {
+      if (signup_password !== signup_confirm_password) {
         swal('Error', 'Password do not match.', 'error');
         break;
       }
 
       /* === check duplicate email === */
       var duplicate_email = 0;
-      ref.child('member').once('value', function (snapshot) {
+      signup_ref.child('member').once('value', function (snapshot) {
         snapshot.forEach(function (childSnapshot) {
-          if (childSnapshot.val().email === email) {
+          if (childSnapshot.val().email === signup_email) {
             duplicate_email = 1;
           }
         });
@@ -53890,20 +53904,46 @@ exports.default = function () {
         if (duplicate_email === 1) {
           swal('Error', 'Email not available.', 'error');
         } else {
-          ref.child('member').push({
-            name: name,
-            email: email,
-            password: password,
-            role: role
+          signup_ref.child('member').push({
+            name: signup_name,
+            email: signup_email,
+            password: signup_password,
+            role: signup_role
           }).then(function () {
             swal('Success', 'Woo hoo.', 'success');
-            then.setState({ redirect: true });
+            signup_then.setState({ redirect: true });
           });
         }
       });
       /* ============================= */
-
+      return null;
       break;
+
+    case 'sign_in':
+      var _action$info2 = action.info,
+          signin_email = _action$info2.signin_email,
+          signin_password = _action$info2.signin_password,
+          signin_then = _action$info2.signin_then;
+
+      var singin_ref = _FirebaseDatabase2.default.database().ref('cmmc/member');
+
+      singin_ref.once('value', function (snapshot) {
+        snapshot.forEach(function (childSnapshot) {
+          if (childSnapshot.val().email === signin_email && childSnapshot.val().password === signin_password) {
+            signin_then.setState({ token: childSnapshot.key });
+            //console.log(then.state.token)
+          }
+        });
+      }).then(function () {
+        if (signin_then.state.token !== null) {
+          signin_then.setState({ redirect: true });
+        } else {
+          swal('Error', 'User not found.', 'error');
+        }
+      });
+      return null;
+      break;
+
     default:
       return state;
   }
