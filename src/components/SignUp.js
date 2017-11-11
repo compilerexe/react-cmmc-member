@@ -10,10 +10,10 @@ export default class SignUp extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      name: null,
-      email: null,
-      password: null,
-      confirm_password: null,
+      name: '',
+      email: '',
+      password: '',
+      confirm_password: '',
       redirect: false
     }
   }

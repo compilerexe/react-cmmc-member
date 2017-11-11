@@ -34,3 +34,33 @@ export const sign_in = (
       }
   }
 )
+
+export const profile_init = (
+  {
+    profile_init = ''
+  } = {}) => ({
+    type: 'profile_init',
+    info:
+      {
+        profile_init
+      }
+  }
+)
+
+export const profile_update = (
+  {
+    profile_name = '',
+    profile_email = '',
+    profile_role = 'none',
+    profile_then = ''
+  } = {}) => ({
+    type: 'profile_update',
+    info:
+      {
+        profile_name,
+        profile_email,
+        profile_role,
+        profile_then
+      }
+  }
+)

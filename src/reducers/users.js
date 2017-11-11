@@ -1,3 +1,4 @@
+import React from 'react'
 import firebase from '../components/FirebaseDatabase'
 import 'sweetalert'
 
@@ -71,6 +72,61 @@ export default (state = {}, action) => {
           swal('Error', 'User not found.', 'error')
         }
       })
+      return null
+      break
+
+    case 'profile_init':
+      const {profile_init} = action.info
+      firebase.database().ref('cmmc/member').once('value', (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          if (childSnapshot.key === profile_init.state.token) {
+            profile_init.setState({
+              name: childSnapshot.val().name,
+              email: childSnapshot.val().email,
+              role: childSnapshot.val().role
+            })
+          }
+        })
+      })
+
+      const RoleList = (props) => {
+        return <option value={props.value}>{props.name}</option>
+      }
+      let lists = []
+      firebase.database().ref('cmmc/roles').once('value', (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          lists.push(<RoleList
+            key={childSnapshot.key}
+            name={childSnapshot.val().name}
+            value={childSnapshot.key}
+          />)
+
+          if (childSnapshot.key === profile_init.state.role) {
+            profile_init.setState({
+              role_detail: childSnapshot.val().detail
+            })
+          }
+        })
+        profile_init.setState({RoleLists: lists})
+      })
+      return null
+      break
+
+    case 'profile_update':
+      const {profile_name, profile_email, profile_role, profile_then} = action.info
+      firebase.database().ref('cmmc/member/' + profile_then.state.token).update({
+        name: profile_name,
+        email: profile_email,
+        role: profile_role
+      })
+      firebase.database().ref('cmmc/roles/').once('value', (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          if (childSnapshot.key === profile_role) {
+            profile_then.setState({role_detail: childSnapshot.val().detail})
+          }
+        })
+      })
+      swal('Success', '', 'success')
       return null
       break
 

@@ -9,7 +9,7 @@ export default class SignIn extends Component {
 
   constructor (props) {
     super(props)
-    this.state = {email: null, password: null, token: null, redirect: false}
+    this.state = {email: '', password: '', token: '', redirect: false}
   }
 
   _Submit = (e) => {
