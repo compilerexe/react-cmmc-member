@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import firebase from './FirebaseDatabase'
 import Menu from './Menu.jsx'
-import RoleList from './RoleList.jsx'
+import {role_init} from '../actions/roles'
+import configureStore from '../store/configureStore'
+
+const store = configureStore()
 
 export default class Manage extends Component {
 
@@ -12,25 +14,7 @@ export default class Manage extends Component {
   }
 
   componentDidMount () {
-    let ref = firebase.database().ref('cmmc/roles')
-
-    ref.on('value', (snapshot) => {
-      let count = 1
-      let lists = []
-
-      snapshot.forEach(function (childSnapshot) {
-        lists.push(<RoleList
-          key={count} number={count}
-          name={childSnapshot.val().name}
-          edit={'role/edit/' + childSnapshot.key}
-          delete={() => {firebase.database().ref('cmmc/roles/' + childSnapshot.key).remove()}}
-        />)
-        count++
-      })
-
-      //console.log(lists)
-      this.setState({RoleLists: lists})
-    })
+    store.dispatch(role_init({init: this}))
   }
 
   render () {

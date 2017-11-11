@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import firebase from './FirebaseDatabase'
 import Menu from './Menu.jsx'
-import 'sweetalert'
+import {role_edit, role_update} from '../actions/roles'
+import configureStore from '../store/configureStore'
+
+const store = configureStore()
 
 export default class RoleEdit extends Component {
 
@@ -12,30 +14,16 @@ export default class RoleEdit extends Component {
   }
 
   componentDidMount () {
-    let ref = firebase.database().ref('cmmc/roles')
-    let then = this
-
-    ref.once('value', (snapshot) => {
-      snapshot.forEach((childSnapshot) => {
-        //console.log(then.state.role_id)
-        if (childSnapshot.key === then.props.match.params.id) {
-          then.setState({
-            role_name: childSnapshot.val().name,
-            role_detail: childSnapshot.val().detail
-          })
-        }
-      })
-    })
+    store.dispatch(role_edit({e_role_than: this}))
   }
 
   _Submit = (e) => {
     e.preventDefault()
-    let ref = firebase.database().ref('cmmc/roles/' + this.props.match.params.id)
-    ref.set({
-      name: this.state.role_name,
-      detail: this.state.role_detail
-    })
-    swal('Success', '', 'success')
+    store.dispatch(role_update({
+      u_role_name: this.state.role_name,
+      u_role_detail: this.state.role_detail,
+      u_role_than: this
+    }))
   }
 
   render () {

@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import { Link, Redirect } from 'react-router-dom'
-import firebase from './FirebaseDatabase'
+import { role_create } from '../actions/roles'
+import configureStore from '../store/configureStore'
+
+const store = configureStore()
 
 export default class CreateRole extends Component {
 
@@ -10,15 +13,11 @@ export default class CreateRole extends Component {
   }
 
   _insertRole = () => {
-    let ref = firebase.database().ref('cmmc/roles')
-    let then = this
-    const {role_name, role_detail} = this.state
-    ref.push({
-      name: role_name,
-      detail: role_detail
-    }).then(function () {
-      then.setState({redirect: true})
-    })
+    store.dispatch(role_create({
+      c_role_name: this.state.role_name,
+      c_role_detail: this.state.role_detail,
+      c_role_than: this
+    }))
   }
 
   render () {
