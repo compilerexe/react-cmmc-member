@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { sign_in } from '../actions/users'
 import configureStore from '../store/configureStore'
+import 'font-awesome/css/font-awesome.css'
 
 const store = configureStore()
 
@@ -10,6 +11,27 @@ export default class SignIn extends Component {
   constructor (props) {
     super(props)
     this.state = {email: '', password: '', token: '', redirect: false}
+  }
+
+  componentDidMount () {
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: '1997418417198726',
+        cookie: true,
+        xfbml: true,
+        version: 'v2.11'
+      })
+      FB.AppEvents.logPageView()
+    };
+
+    (function (d, s, id) {
+      let js, fjs = d.getElementsByTagName(s)[0]
+      if (d.getElementById(id)) {return}
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://connect.facebook.net/en_US/sdk.js'
+      fjs.parentNode.insertBefore(js, fjs)
+    }(document, 'script', 'facebook-jssdk'))
   }
 
   _Submit = (e) => {
@@ -50,30 +72,44 @@ export default class SignIn extends Component {
                                required/>
                       </div>
                     </div>
-                    <div className='columns'>
-                      <div className='column'>
-                        <div className='left'>
-                          <div className='field'>
-                            <div className='control'>
-                              <Link to='/signup'>
-                                <button type='button' className='button is-primary'>Sign Up
-                                </button>
-                              </Link>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='column'>
-                        <div className='level-right'>
-                          <div className='field'>
-                            <div className='control'>
-                              <button className='button is-link'>Sign In
-                              </button>
-                            </div>
-                          </div>
-                        </div>
+
+                    <div className='field'>
+                      <div className='control'>
+                        <Link to='/signup'>
+                          <button type='button' className='button is-danger' style={{width: '100%'}}>
+                            Sign Up with Email
+                          </button>
+                        </Link>
                       </div>
                     </div>
+
+                    <div className='field'>
+                      <div className='control'>
+                        <button className='button is-success' style={{width: '100%'}}>
+                          <i className='fa fa-envelope'/>&nbsp;
+                          Sign In with Email
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className='field'>
+                      <div className='control'>
+                        <button type='button' className='button is-link' style={{width: '100%'}}>
+                          <i className='fa fa-facebook'/>&nbsp;
+                          Sign In with Facebook
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className='field'>
+                      <div className='control'>
+                        <button type='button' className='button is-warning' style={{width: '100%'}}>
+                          <i className='fa fa-google'/>&nbsp;
+                          Sign In with Google
+                        </button>
+                      </div>
+                    </div>
+
                   </form>
 
                 </div>
