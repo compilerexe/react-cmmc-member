@@ -19,6 +19,21 @@ export const sign_up = (
     }
 })
 
+export const sign_up_facebook = (
+  {
+    signup_facebook_id = '',
+    signup_facebook_name = '',
+    signup_facebook_then = ''
+  } = {}) => ({
+  type: 'sign_up_facebook',
+  info:
+    {
+      signup_facebook_id,
+      signup_facebook_name,
+      signup_facebook_then
+    }
+})
+
 export const sign_in = (
   {
     signin_email = '',
@@ -34,6 +49,22 @@ export const sign_in = (
       }
   }
 )
+
+export const sign_in_facebook = (
+  {
+    signin_facebook_id = '',
+    signin_facebook_then = ''
+  } = {}) => ({
+    type: 'sign_in_facebook',
+    info:
+      {
+        signin_facebook_id,
+        signin_facebook_then
+      }
+  }
+)
+
+export const sign_out = ({sign_out_then} = {}) => ({type: 'sign_out', info: {sign_out_then}})
 
 export const profile_init = (
   {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Link, Redirect } from 'react-router-dom'
-import { sign_in } from '../actions/users'
+import { Link, Redirect, withRouter } from 'react-router-dom'
+import { sign_in, sign_up, sign_up_facebook, sign_in_facebook, remember_token, _token } from '../actions/users'
 import configureStore from '../store/configureStore'
 import 'font-awesome/css/font-awesome.css'
 
@@ -10,7 +10,7 @@ export default class SignIn extends Component {
 
   constructor (props) {
     super(props)
-    this.state = {email: '', password: '', token: '', redirect: false}
+    this.state = {email: '', password: '', redirect: false}
   }
 
   componentDidMount () {
@@ -43,10 +43,35 @@ export default class SignIn extends Component {
     }))
   }
 
+  _FacebookSignIn = () => {
+    let then = this
+    FB.getLoginStatus(function(response) {
+      if (response.status === 'connected') {
+        FB.api('/me', function(response) {
+          console.log(response);
+          store.dispatch(sign_up_facebook({
+            signup_facebook_id: response.id,
+            signup_facebook_name: response.name,
+            signup_facebook_then: then
+          }))
+          store.dispatch(sign_in_facebook({
+            signin_facebook_id: response.id,
+            signin_facebook_then: then
+          }))
+        });
+      }
+      else {
+        FB.login();
+      }
+    });
+  }
+
   render () {
 
     if (this.state.redirect) {
-      return <Redirect to={'/profile/' + this.state.token}/>
+      //store.dispatch(remember_token({remember_token: this.state.token}))
+      //store.dispatch(_token())
+      return <Redirect to='/profile'/>
     }
 
     return (
@@ -94,7 +119,7 @@ export default class SignIn extends Component {
 
                     <div className='field'>
                       <div className='control'>
-                        <button type='button' className='button is-link' style={{width: '100%'}}>
+                        <button type='button' className='button is-link' style={{width: '100%'}} onClick={this._FacebookSignIn}>
                           <i className='fa fa-facebook'/>&nbsp;
                           Sign In with Facebook
                         </button>
